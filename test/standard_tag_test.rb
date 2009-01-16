@@ -227,6 +227,11 @@ HERE
     assigns = {'var' => {'b c' => {'paged' => '1' }}}
     assert_template_result('var2: 1','{%assign var2 = var["b c"].paged %}var2: {{var2}}',assigns)
   end
+  
+  def test_assign_with_filtered_expressions
+    assert_template_result('foo','{% assign foo = values|sort|last %}{{ foo }}', 'values' => %w{foo bar baz})
+    assert_template_result('foo','{% assign sorted = values|sort %}{{ sorted | last }}', 'values' => %w{foo bar baz})
+  end
 
   def test_capture
     assigns = {'var' => 'content' }
