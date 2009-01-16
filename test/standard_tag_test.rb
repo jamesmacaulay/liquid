@@ -217,6 +217,16 @@ HERE
     assigns = {'var' => {'a:b c' => {'paged' => '1' }}}
     assert_template_result('var2: 1','{%assign var2 = var["a:b c"].paged %}var2: {{var2}}',assigns)
   end
+  
+  def test_assign_with_colon
+    assigns = {'var' => {'a:b' => {'paged' => '1' }}}
+    assert_template_result('var2: 1','{%assign var2 = var["a:b"].paged %}var2: {{var2}}',assigns)
+  end
+  
+  def test_assign_with_spaces
+    assigns = {'var' => {'b c' => {'paged' => '1' }}}
+    assert_template_result('var2: 1','{%assign var2 = var["b c"].paged %}var2: {{var2}}',assigns)
+  end
 
   def test_capture
     assigns = {'var' => 'content' }
@@ -353,9 +363,16 @@ HERE
     assert_template_result('one two','{%cycle "one", "two"%} {%cycle "one", "two"%}') 
     
     assert_template_result('one two one','{%cycle "one", "two"%} {%cycle "one", "two"%} {%cycle "one", "two"%}') 
-    
-    assert_template_result('text-align: left text-align: right','{%cycle "text-align: left", "text-align: right" %} {%cycle "text-align: left", "text-align: right"%}') 
-    
+  end
+  
+  def test_cycle_with_colons
+    assert_template_result('text-align: left text-align: right','{%cycle "text-align: left", "text-align: right" %} {%cycle "text-align: left", "text-align: right"%}')
+    assert_template_result('a:b c+foo','{%cycle "a:b c", "foo" %}+{%cycle "a:b c", "foo" %}') 
+  end
+  
+  def test_cycle_with_blank_strings
+    assert_template_result(' ','{% cycle " ", "", "</tr><tr>" %}')  
+    assert_template_result('+ +</tr><tr>','{% cycle "", " ", "</tr><tr>" %}+{% cycle "", " ", "</tr><tr>" %}+{% cycle "", " ", "</tr><tr>" %}')
   end
   
   def test_multiple_cycles
@@ -364,6 +381,10 @@ HERE
   
   def test_multiple_named_cycles
     assert_template_result('one one two two one one','{%cycle 1: "one", "two" %} {%cycle 2: "one", "two" %} {%cycle 1: "one", "two" %} {%cycle 2: "one", "two" %} {%cycle 1: "one", "two" %} {%cycle 2: "one", "two" %}') 
+  end
+  
+  def test_multiple_named_cycles_with_quoted_names
+    assert_template_result('one one two two one one','{%cycle "foo": "one", "two" %} {%cycle "bar": "one", "two" %} {%cycle "foo": "one", "two" %} {%cycle "bar": "one", "two" %} {%cycle "foo": "one", "two" %} {%cycle "bar": "one", "two" %}') 
   end
   
   def test_multiple_named_cycles_with_names_from_context

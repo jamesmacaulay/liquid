@@ -34,7 +34,24 @@ class RegexpTest < Test::Unit::TestCase
     assert_equal ['var', '[method]'],       'var[method]'.scan(VariableParser)
     assert_equal ['var', '[method]', '[0]'],  'var[method][0]'.scan(VariableParser)
     assert_equal ['var', '["method"]', '[0]'],  'var["method"][0]'.scan(VariableParser)
-    assert_equal ['var', '[method]', '[0]', 'method'],  'var[method][0].method'.scan(VariableParser)    
+    assert_equal ['var', '[method]', '[0]', 'method'],  'var[method][0].method'.scan(VariableParser)
+    assert_equal ['var', '["method"]', '[0]', 'method'],  'var["method"][0].method'.scan(VariableParser)
+    assert_equal ['var', '["me thod"]', '[0]', 'method'],  'var["me thod"][0].method'.scan(VariableParser)
+  end
+  
+  def test_expression_with_blank_strings
+    assert_equal ['" "'], '" "'.scan(Expression)
+    assert_equal ['""'],  '""'.scan(Expression)
+  end
+  
+  def test_cycle_named_syntax_with_colons_before_quoted_fragments
+    assert_equal [['blah', '"foo"']], 'blah: "foo"'.scan(Cycle::NamedSyntax)
+    assert_equal [['"blah"', '"bar", "baz"']],  '"blah" :"bar", "baz"'.scan(Cycle::NamedSyntax)
+  end
+  
+  def test_cycle_named_syntax_with_colons_in_quoted_fragments
+    assert_equal [], '"a:b c", "foo"'.scan(Cycle::NamedSyntax)
+    assert_equal [],  '"foo", " d:e"'.scan(Cycle::NamedSyntax)
   end
  
 end

@@ -13,10 +13,10 @@ module Liquid
   #    <div class="green"> Item five</div>
   #
   class Cycle < Tag
-    SimpleSyntax = /^#{Expression}/        
+    SimpleSyntax = /^#{Expression}/
     NamedSyntax = /^(#{Expression})\s*\:\s*(.*)/
   
-    def initialize(tag_name, markup, tokens)      
+    def initialize(tag_name, markup, tokens)
       case markup
       when NamedSyntax
       	@variables = variables_from_string($2)

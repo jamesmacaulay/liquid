@@ -7,6 +7,8 @@ require 'caller'
 require 'breakpoint'
 require File.dirname(__FILE__) + '/../lib/liquid'
 
+# require 'rubygems'
+# require 'ruby-debug'
 
 module Test
   module Unit
